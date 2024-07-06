@@ -1,4 +1,4 @@
-package main;
+package src.main.java.webcrawler;
 
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
