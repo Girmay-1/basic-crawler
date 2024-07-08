@@ -39,7 +39,7 @@ public class WebCrawlerTest {
 
     @Test
     void testCrawl() {
-        //2. execution
+        //2. act
         // Start crawling
         webCrawler.startCrawling();
         //3. verification/assertion
@@ -50,5 +50,52 @@ public class WebCrawlerTest {
         assertTrue(visitedUrls.contains("http://example.com"));
         assertTrue(visitedUrls.contains("http://example.com/page1"));
 
+    }
+    @Test
+    void testEmptyPage() {
+        // Arrange
+        WebCrawler emptyPageCrawler = new WebCrawler("http://example.com/page1", 1) {
+            @Override
+            protected String fetchUrlContent(String url) {
+                return MockURLFetcher.fetch(url);
+            }
+
+            @Override
+            protected List<String> processUrlContent(String content) {
+                return MockURLProcessor.process(content);
+            }
+        };
+
+        // Act
+        emptyPageCrawler.startCrawling();
+
+        // Assert
+        Set<String> visitedUrls = emptyPageCrawler.getVisitedUrls();
+        assertEquals(1, visitedUrls.size());
+        assertTrue(visitedUrls.contains("http://example.com/page1"));
+    }
+
+    @Test
+    void testMaxDepthLimit() {
+        // Arrange
+        WebCrawler depthLimitCrawler = new WebCrawler("http://example.com", 1) {
+            @Override
+            protected String fetchUrlContent(String url) {
+                return MockURLFetcher.fetch(url);
+            }
+
+            @Override
+            protected List<String> processUrlContent(String content) {
+                return MockURLProcessor.process(content);
+            }
+        };
+
+        // Act
+        depthLimitCrawler.startCrawling();
+
+        // Assert
+        Set<String> visitedUrls = depthLimitCrawler.getVisitedUrls();
+        assertEquals(1, visitedUrls.size());
+        assertTrue(visitedUrls.contains("http://example.com"));
     }
 }
